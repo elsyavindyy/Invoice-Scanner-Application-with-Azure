@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Data</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h3 {
+            margin-top: 35px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        #backBtn {
+            margin-bottom: 20px;
+            padding: 8px 14px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #backBtn:hover {
+            background: #217dbb;
+        }
+
+        /* TABLE STYLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #aaa;
+            padding: 6px;
+            text-align: left;
+        }
+
+        th {
+            background: #e8e8e8;
+            font-weight: bold;
+        }
+
+        td input {
+            width: 98%;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Invoice Data</h1>
+
+        <button id="backBtn">⬅ Back to Upload</button>
+        <form id="dynamicForm"></form>
+    </div>
+
+    <script>
+        const data = JSON.parse(localStorage.getItem("invoice_data"));
+        const form = document.getElementById("dynamicForm");
+        const backBtn = document.getElementById("backBtn");
+
+        backBtn.addEventListener("click", () => {
+            window.location.href = "dashboard.html";
+        });
+
+        if (!data) {
+            form.innerHTML = "<p>No data found.</p>";
+        } else {
+            for (const key in data) {
+                const value = data[key];
+
+                // ====================================
+                // CASE 1: ARRAY OF OBJECT (Item, INFO, Total)
+                // ====================================
+                if (Array.isArray(value) && typeof value[0] === "object") {
+                    form.innerHTML += `<h3>${key}</h3>`;
+
+                    const headers = Object.keys(value[0]);
+                    let table = `<table><tr>`;
+
+                    headers.forEach(h => table += `<th>${h}</th>`);
+                    table += `</tr>`;
+
+                    value.forEach((row, idx) => {
+                        table += `<tr>`;
+                        headers.forEach(col => {
+                            table += `
+                                <td>
+                                    <input type="text" name="${key}[${idx}][${col}]" value="${row[col] || ''}">
+                                </td>`;
+                        });
+                        table += `</tr>`;
+                    });
+
+                    table += `</table>`;
+                    form.innerHTML += table;
+                }
+
+                // ====================================
+                // CASE 2: OBJECT
+                // ====================================
+                else if (typeof value === "object" && value !== null) {
+                    form.innerHTML += `<h3>${key}</h3>`;
+                    for (const subKey in value) {
+                        form.innerHTML += `
+                            <label>${subKey}</label>
+                            <input type="text" name="${key}[${subKey}]" value="${value[subKey] || ''}">
+                            <br><br>
+                        `;
+                    }
+                }
+
+                // ====================================
+                // CASE 3: SIMPLE VALUE
+                // ====================================
+                else {
+                    form.innerHTML += `
+                        <label>${key}</label>
+                        <input type="text" name="${key}" value="${value}">
+                        <br><br>
+                    `;
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
