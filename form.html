@@ -80,6 +80,45 @@
             width: 98%;
             padding: 5px;
         }
+        /* Biar input rapi di dalam tabel */
+        table input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            height: 38px;
+        }
+
+        /* Biar input ga nabrak ujung table */
+        td {
+            padding: 6px;
+        }
+
+        /* Biar header tabel terlihat lebih profesional */
+        th {
+            background: #e5e5e5;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Biar baris tabel lebih rapi */
+        td {
+            vertical-align: middle;
+        }
+
+        /* Biar tabel full width */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table td, table th {
+            border: 1px solid #bbb;
+        }
+
     </style>
 </head>
 
@@ -95,70 +134,89 @@
         const data = JSON.parse(localStorage.getItem("invoice_data"));
         const form = document.getElementById("dynamicForm");
         const backBtn = document.getElementById("backBtn");
+        const sectionOrder = [
+            "NO. SERI",
+            "Kepada",
+            "NPWP",
+            "KODE LANG",
+            "Ship To",
+            "ALAMAT GUDANG",
+            "IJIN PBF",
+            "NPWP2",
+            "INFO",
+            "Item",
+            "Total"
+        ];
+        const tableColumnOrder = {
+            "Item": ["K. PROD", "NAMA BARANG", "NO. BATCH", "UNIT", "HARGA", "TOTAL"],
+            "INFO": ["K. DOK", "NO. DOK", "TANGGAL", "NO. SO", "C. BAYAR", "TGL J. TEMPO", "PENJAJA", "RAYON TRP", "POT. EXTRA", "POT. TUNAI"],
+            "Total": ["TOTAL 1", "POTONGAN", "TOTAL 2", "P.P.N.", "B. KIRIM", "METERAI", "JUMLAH TAGIHAN"]
+        };
 
         backBtn.addEventListener("click", () => {
             window.location.href = "dashboard.html";
         });
 
-        if (!data) {
-            form.innerHTML = "<p>No data found.</p>";
-        } else {
-            for (const key in data) {
-                const value = data[key];
+        sectionOrder.forEach(section => {
+        const value = data[section];
+        if (!value) return;
 
-                // ====================================
-                // CASE 1: ARRAY OF OBJECT (Item, INFO, Total)
-                // ====================================
-                if (Array.isArray(value) && typeof value[0] === "object") {
-                    form.innerHTML += `<h3>${key}</h3>`;
+        // JUDUL SECTION
+        form.innerHTML += `<h3>${section}</h3>`;
 
-                    const headers = Object.keys(value[0]);
-                    let table = `<table><tr>`;
+        // Case 1: ARRAY OF OBJECT (Item)
+        if (Array.isArray(value) && typeof value[0] === "object") {
 
-                    headers.forEach(h => table += `<th>${h}</th>`);
-                    table += `</tr>`;
+            let headers;
 
-                    value.forEach((row, idx) => {
-                        table += `<tr>`;
-                        headers.forEach(col => {
-                            table += `
-                                <td>
-                                    <input type="text" name="${key}[${idx}][${col}]" value="${row[col] || ''}">
-                                </td>`;
-                        });
-                        table += `</tr>`;
-                    });
+            // Jika ada order khusus → pakai itu
+            if (tableColumnOrder[section]) {
+                headers = tableColumnOrder[section];
+            } else {
+                headers = Object.keys(value[0]);
+            }
 
-                    table += `</table>`;
-                    form.innerHTML += table;
-                }
+            let table = `<table><tr>`;
+            headers.forEach(h => table += `<th>${h}</th>`);
+            table += `</tr>`;
 
-                // ====================================
-                // CASE 2: OBJECT
-                // ====================================
-                else if (typeof value === "object" && value !== null) {
-                    form.innerHTML += `<h3>${key}</h3>`;
-                    for (const subKey in value) {
-                        form.innerHTML += `
-                            <label>${subKey}</label>
-                            <input type="text" name="${key}[${subKey}]" value="${value[subKey] || ''}">
-                            <br><br>
-                        `;
-                    }
-                }
+            value.forEach((row, idx) => {
+                table += `<tr>`;
+                headers.forEach(col => {
+                    table += `
+                        <td>
+                            <input type="text" 
+                                name="${section}[${idx}][${col}]" 
+                                value="${row[col] || ''}">
+                        </td>`;
+                });
+                table += `</tr>`;
+            });
 
-                // ====================================
-                // CASE 3: SIMPLE VALUE
-                // ====================================
-                else {
-                    form.innerHTML += `
-                        <label>${key}</label>
-                        <input type="text" name="${key}" value="${value}">
-                        <br><br>
-                    `;
-                }
+            table += `</table>`;
+            form.innerHTML += table;
+        }
+
+        // Case 2: OBJECT
+        else if (typeof value === "object" && value !== null) {
+            for (const subKey in value) {
+                form.innerHTML += `
+                    <input type="text" 
+                        name="${section}[${subKey}]" 
+                        value="${value[subKey] || ''}">
+                    <div class="space"></div>
+                `;
             }
         }
+
+        // Case 3: SIMPLE VALUE
+        else {
+            form.innerHTML += `
+                <input type="text" name="${section}" value="${value}">
+            `;
+        }
+    });
+
     </script>
 
 </body>
