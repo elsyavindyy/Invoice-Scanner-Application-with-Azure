@@ -47,7 +47,6 @@ source venv/bin/activate
 
 ## 📚 Instalasi Dependencies
 
-Pastikan `requirements.txt` sudah kamu siapkan.
 Untuk install semua kebutuhan:
 
 ```bash
@@ -106,3 +105,4 @@ Buka browser dan akses URL tersebut.
 * Azure AI Document Intelligence
 * Azure Key Credential
 * JSON Formatter
+
