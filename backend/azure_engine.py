@@ -2,9 +2,9 @@ import json
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.documentintelligence import DocumentIntelligenceClient
 
-endpoint = "https://vindydongs.cognitiveservices.azure.com/"
-key = "6e3203a55dec4e32b519a0ca975f5e79"
-model_id = "invoicecoba"
+endpoint = "ENTER YOUR ENDPOINT HERE"
+key = "ENTER YOUR KEY HERE"
+model_id = "ENTER YOUR MODEL ID"
 
 
 client = DocumentIntelligenceClient(endpoint, AzureKeyCredential(key))
