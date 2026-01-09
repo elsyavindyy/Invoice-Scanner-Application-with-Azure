@@ -5,219 +5,275 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice Data</title>
 
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
             background: #f4f6f9;
-            margin: 0;
-            padding: 20px;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            background: #fff;
-            padding: 25px;
+        .card {
             border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        h3 {
-            margin-top: 35px;
-            margin-bottom: 10px;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-
-        #backBtn {
-            margin-bottom: 20px;
-            padding: 8px 14px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        #backBtn:hover {
-            background: #217dbb;
-        }
-
-        /* TABLE STYLE */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            border: 1px solid #aaa;
-            padding: 6px;
-            text-align: left;
-        }
-
-        th {
-            background: #e8e8e8;
-            font-weight: bold;
-        }
-
-        td input {
-            width: 98%;
-            padding: 5px;
-        }
-        /* Biar input rapi di dalam tabel */
         table input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
             height: 38px;
         }
-
-        /* Biar input ga nabrak ujung table */
-        td {
-            padding: 6px;
-        }
-
-        /* Biar header tabel terlihat lebih profesional */
-        th {
-            background: #e5e5e5;
-            padding: 10px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        /* Biar baris tabel lebih rapi */
-        td {
-            vertical-align: middle;
-        }
-
-        /* Biar tabel full width */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table td, table th {
-            border: 1px solid #bbb;
-        }
-
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Invoice Data</h1>
+<div class="container my-4">
 
-        <button id="backBtn">⬅ Back to Upload</button>
-        <form id="dynamicForm"></form>
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">Invoice Data</h4>
+                <button id="backBtn" class="btn btn-primary btn-sm">
+                    ⬅ Back to Upload
+                </button>
+            </div>
+
+            <form id="dynamicForm"></form>
+
+        </div>
     </div>
 
-    <script>
-        const data = JSON.parse(localStorage.getItem("invoice_data"));
-        const form = document.getElementById("dynamicForm");
-        const backBtn = document.getElementById("backBtn");
-        const sectionOrder = [
-            "NO. SERI",
-            "Kepada",
-            "NPWP",
-            "KODE LANG",
-            "Ship To",
-            "ALAMAT GUDANG",
-            "IJIN PBF",
-            "NPWP2",
-            "INFO",
-            "Item",
-            "Total"
-        ];
-        const tableColumnOrder = {
-            "Item": ["K. PROD", "NAMA BARANG", "NO. BATCH", "UNIT", "HARGA", "TOTAL"],
-            "INFO": ["K. DOK", "NO. DOK", "TANGGAL", "NO. SO", "C. BAYAR", "TGL J. TEMPO", "PENJAJA", "RAYON TRP", "POT. EXTRA", "POT. TUNAI"],
-            "Total": ["TOTAL 1", "POTONGAN", "TOTAL 2", "P.P.N.", "B. KIRIM", "METERAI", "JUMLAH TAGIHAN"]
-        };
+</div>
 
-        backBtn.addEventListener("click", () => {
-            window.location.href = "dashboard.html";
-        });
+<script>
+const data = JSON.parse(localStorage.getItem("invoice_data"));
+const form = document.getElementById("dynamicForm");
+const backBtn = document.getElementById("backBtn");
 
-        sectionOrder.forEach(section => {
-        const value = data[section];
-        if (!value) return;
+const sectionOrder = [
+    "NO. SERI",
+    "Kepada",
+    "NPWP",
+    "KODE LANG",
+    "Ship To",
+    "ALAMAT GUDANG",
+    "IJIN PBF",
+    "NPWP2",
+    "INFO",
+    "Item",
+    "Total"
+];
 
-        // JUDUL SECTION
-        form.innerHTML += `<h3>${section}</h3>`;
+const tableColumnOrder = {
+    "Item": ["K. PROD", "NAMA BARANG", "NO. BATCH", "UNIT", "HARGA", "TOTAL"],
+    "INFO": ["K. DOK", "NO. DOK", "TANGGAL", "NO. SO", "C. BAYAR", "TGL J. TEMPO", "PENJAJA", "RAYON TRP", "POT. EXTRA", "POT. TUNAI"],
+    "Total": ["TOTAL 1", "POTONGAN", "TOTAL 2", "P.P.N.", "B. KIRIM", "METERAI", "JUMLAH TAGIHAN"]
+};
 
-        // Case 1: ARRAY OF OBJECT (Item)
-        if (Array.isArray(value) && typeof value[0] === "object") {
+backBtn.addEventListener("click", () => {
+    window.location.href = "dashboard.html";
+});
 
-            let headers;
+sectionOrder.forEach(section => {
+    const value = data[section];
+    if (!value) return;
 
-            // Jika ada order khusus → pakai itu
-            if (tableColumnOrder[section]) {
-                headers = tableColumnOrder[section];
-            } else {
-                headers = Object.keys(value[0]);
-            }
+    let sectionHTML = '';
 
-            let table = `<table><tr>`;
-            headers.forEach(h => table += `<th>${h}</th>`);
-            table += `</tr>`;
+    /* =====================
+       TABLE / OBJECT → PAKAI HEADER
+    ===================== */
+    const useHeader =
+        Array.isArray(value) ||
+        (typeof value === "object" && value !== null && !Array.isArray(value));
 
-            value.forEach((row, idx) => {
-                table += `<tr>`;
-                headers.forEach(col => {
-                    table += `
-                        <td>
-                            <input type="text" 
-                                name="${section}[${idx}][${col}]" 
-                                value="${row[col] || ''}">
-                        </td>`;
-                });
-                table += `</tr>`;
+
+    /* =====================
+       TABLE
+    ===================== */
+    if (Array.isArray(value) && typeof value[0] === "object") {
+
+        const headers = tableColumnOrder[section] || Object.keys(value[0]);
+
+        sectionHTML += `
+            <div class="d-flex justify-content-end mb-2">
+                <button type="button"
+                        class="btn btn-sm btn-success"
+                        onclick="addRow('${section}')">
+                    ➕ Add Row
+                </button>
+            </div>
+        `;
+
+        sectionHTML += `
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle" data-section="${section}">
+                    <thead class="table-light">
+                        <tr>
+                            ${headers.map(h => `<th class="text-center">${h}</th>`).join("")}
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        value.forEach((row, idx) => {
+            sectionHTML += `<tr>`;
+            headers.forEach(col => {
+                sectionHTML += `
+                    <td>
+                        <input type="text"
+                               class="form-control"
+                               name="${section}[${idx}][${col}]"
+                               value="${row[col] || ''}">
+                    </td>
+                `;
             });
 
-            table += `</table>`;
-            form.innerHTML += table;
-        }
+            sectionHTML += `
+                <td class="text-center">
+                    <button type="button"
+                            class="btn btn-sm btn-danger"
+                            onclick="deleteRow(this)">
+                        ✕
+                    </button>
+                </td>
+            `;
+            sectionHTML += `</tr>`;
+        });
 
-        // Case 2: OBJECT
-        else if (typeof value === "object" && value !== null) {
-            for (const subKey in value) {
-                form.innerHTML += `
-                    <input type="text" 
-                        name="${section}[${subKey}]" 
-                        value="${value[subKey] || ''}">
-                    <div class="space"></div>
-                `;
-            }
-        }
+        sectionHTML += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
 
-        // Case 3: SIMPLE VALUE
-        else {
-            form.innerHTML += `
-                <input type="text" name="${section}" value="${value}">
+    /* =====================
+       OBJECT → HEADER OK
+    ===================== */
+    else if (typeof value === "object" && value !== null) {
+
+        for (const subKey in value) {
+            sectionHTML += `
+                <div class="row mb-3 align-items-center">
+                    <label class="col-md-3 col-form-label fw-semibold">
+                        ${subKey}
+                    </label>
+                    <div class="col-md-9">
+                        <input type="text"
+                               class="form-control"
+                               name="${section}[${subKey}]"
+                               value="${value[subKey] || ''}">
+                    </div>
+                </div>
             `;
         }
+    }
+
+    /* =====================
+       SINGLE VALUE → TANPA HEADER
+    ===================== */
+    else {
+        if (!window.singleBuffer) window.singleBuffer = [];
+
+        window.singleBuffer.push({ section, value });
+
+        if (window.singleBuffer.length === 2) {
+            sectionHTML += `
+                <div class="row mb-3">
+                    ${window.singleBuffer.map(item => `
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text fw-semibold w-25">
+                                    ${item.section}
+                                </span>
+                                <input type="text"
+                                    class="form-control"
+                                    name="${item.section}"
+                                    value="${item.value}">
+                            </div>
+                        </div>
+                    `).join("")}
+                </div>
+            `;
+            window.singleBuffer = [];
+        }
+    }
+    sectionHTML += `
+            </div>
+        </div>
+    `;
+
+    form.innerHTML += sectionHTML;
+});
+
+if (window.singleBuffer && window.singleBuffer.length === 1) {
+    const item = window.singleBuffer[0];
+
+    form.innerHTML += `
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="input-group">
+                    <span class="input-group-text fw-semibold">
+                        ${item.section}
+                    </span>
+                    <input type="text"
+                        class="form-control"
+                        name="${item.section}"
+                        value="${item.value}">
+                </div>
+            </div>
+        </div>
+    `;
+
+    window.singleBuffer = [];
+}
+
+/* =====================
+   DELETE TABLE ROW
+===================== */
+function deleteRow(btn) {
+    const row = btn.closest("tr");
+    row.remove();
+}
+
+/* =====================
+   ADD TABLE ROW
+===================== */
+function addRow(section) {
+    const table = document.querySelector(`table[data-section="${section}"]`);
+    const tbody = table.querySelector("tbody");
+    const rowCount = tbody.rows.length;
+
+    const headers = [...table.querySelectorAll("thead th")]
+        .map(th => th.innerText)
+        .filter(h => h !== "Action");
+
+    let newRow = document.createElement("tr");
+
+    headers.forEach(col => {
+        let td = document.createElement("td");
+        td.innerHTML = `
+            <input type="text"
+                   class="form-control"
+                   name="${section}[${rowCount}][${col}]"
+                   value="">
+        `;
+        newRow.appendChild(td);
     });
 
-    </script>
+    // ACTION
+    let actionTd = document.createElement("td");
+    actionTd.className = "text-center";
+    actionTd.innerHTML = `
+        <button type="button"
+                class="btn btn-sm btn-danger"
+                onclick="deleteRow(this)">
+            ✕
+        </button>
+    `;
+    newRow.appendChild(actionTd);
+
+    tbody.appendChild(newRow);
+}
+</script>
 
 </body>
 </html>
