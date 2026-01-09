@@ -17,7 +17,7 @@ def ocr():
         print("📌 File saved:", filepath)
         # LANGSUNG RETURN JSON STRING
         result_dict = run_scan(filepath)
-        print("📌 OCR result:", result_dict)
+        os.remove(filepath)
         return jsonify(result_dict)
 
     except Exception as e:
